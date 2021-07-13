@@ -2,4 +2,7 @@
 
 ## [安装MySQL](docs/安装和设置.md)
 
-## [命令](docs/命令.md)
+## [常用命令](docs/常用命令.md)
+
+## [SQL语言](docs/SQL语言.md)
+
