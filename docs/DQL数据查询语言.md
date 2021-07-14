@@ -5,8 +5,9 @@ select
 from 
 where
 group by
+having 
 order by
-以上语句顺序固定，执行顺序为 from;where;group by;select;order by;
+以上语句顺序固定，执行顺序为 from;where;group by; having;select;order by;
 ```
 ## 简单查询
 ```SQL
@@ -26,8 +27,10 @@ select ename from emp where ename like 'A%';
 - \> 大于；< 小于；= 等于；<> 不等于；>= 大于或等于；<=小于或等于
 - between [值1] and [值2] 表示两者或之间的值，相当于[值1]>= and <=[值2]
 - is [not] null 表示[非]空值(null)，数据库的NULL不能使用=null查询
-- and 逻辑与；or 逻辑或；[not]in [不]包含，相当于多个or;and优先级高于or
+- and 逻辑与；or 逻辑或；
+- [not]in [不]包含，相当于多个or;and优先级高于or
 - like 模糊查询，%表示任意多个字符，_表示任意一个字符（可使用\进行转义）
+
 ## 结果排序
 ```SQL
 select [字段名1] from [表名] order by [字段1] [desc/asc],[字段2] asc;
@@ -72,8 +75,51 @@ select max(sal) as 最高工资,min(sal) as 最低工资,max(sal)-min(sal) as �
 ## 分组查询
 ```SQL
 select job as 岗位,avg(mgr) as 岗位平均工资 from emp group by job;
-select job as 岗位,max(mgr) as 岗位最高工资 from emp group by job;
+select job,deptno,avg(sal) as 各部门各岗位平均工资 from emp group by deptno,job;
+select deptno as 部门,avg(sal) 平均工资大于2000 from emp group by deptno having avg(sal)>2000;
+select job as 岗位,avg(sal) as 岗位不为manager且平均工资大于1500 from emp where job<>'manager' group by job having avg(sal)>1500 order by 岗位不为manager且平均工资大于1500 desc;
 ```
 >当不存在group by时，默认将表分为一组  
->当使用分组语句时，select后只能存在参加分组的字段，否则没有意义
->
+>当使用分组语句时，select后只能存在参加分组的字段或分组函数，否则没有意义  
+>having子句必须和group by一起使用，用于对已分组字段进行过滤
+## 关键字
+```SQL
+select distinct job,deptno from emp;
+```
+- distinct 去除某些重复记录，用在所有字段前
+## 连接查询
+```SQL
+select e.ename,d.dname from emp e,dept d where e.deptno=d.deptno;   SQL92语言，不推荐使用
+select e.ename,d.dname from emp e inner join dept d on e.deptno=d.deptno; SQL99语法
+select e.ename,e.sal,s.grade from emp e inner join salgrade s on e.sal between s.losal and s.hisal;
+select e.empno,e.ename,m.ename from emp e inner join emp m on e.mgr=m.empno;
+select e.ename,e.deptno,d.dname from emp e right outer join dept d on e.deptno=d.deptno;
+select e.ename,e.deptno,d.dname from emp e left outer join dept d on e.deptno=d.deptno;
+select e.ename as 姓名,e.sal 薪资,d.dname as 部门,s.grade 薪资等级,ee.ename as 上级 from emp e  join dept d on e.deptno=d.deptno join salgrade s on e.sal between s.losal and s.hisal left join emp ee on e.mgr=ee.empno;
+```
+- 内连接之等值连接，inner join on 的条件是=
+- 内连接之非等值连接，inner join on 的条件不是=
+- 内连接之自连接，inner join的表是同一个表，查询时使用不同的别名来确定条件
+- 右外连接，right join，首先保证右表的数据全部显示，再匹配左表中条件成立的记录，不匹配则显示为NULL
+- 左外连接，left join，首先保证左表的数据全部显示，再匹配右表中条件成立的记录，不匹配则显示为NULL
+
+>表和表进行连接查询时，查询次数会呈现笛卡尔积现象，因此，应尽量减少表的数量和记录数量  
+>内连接保证条件成立的记录全部查询出来，其余记录不查询  
+>外连接的表分主次关系，不仅仅查询条件匹配的记录  
+>内、外连接中的inner和outer可以省略  
+>多表查询可以多次使用join on
+## 嵌套查询
+```SQL
+select ename,sal as 工资非最低名单 from emp where sal>(select min(sal) from emp) order by sal;
+select e.job,e.avgsal as 岗位平均工资,s.grade 等级 from (select job,avg(sal) as avgsal from emp group by job) e join salgrade s on e.avgsal between s.losal and s.hisal;
+```
+>select查询结果可以被当作一张临时表格，也可用分组函数查询为某个值
+## 合并查询结果
+```SQL
+select ename,job from emp where job='manager' union select ename,job from emp where job is not NULL;
+```
+>合并两个查询的结果集，两个结果集必须保证列数和列的数据类型相同  
+>合并的结果自动去除重复记录  
+>使用union all 会合并所有记录，且效率较高
+
+## 分页查询
