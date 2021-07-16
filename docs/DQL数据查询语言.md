@@ -7,7 +7,8 @@ where
 group by
 having 
 order by
-以上语句顺序固定，执行顺序为 from;where;group by; having;select;order by;
+limit 
+以上语句顺序固定，执行顺序为 from;where;group by; having;select;order by;limit;
 ```
 ## 简单查询
 ```SQL
@@ -123,3 +124,57 @@ select ename,job from emp where job='manager' union select ename,job from emp wh
 >使用union all 会合并所有记录，且效率较高
 
 ## 分页查询
+```SQL
+select * from emp order by sal desc limit 6;
+select * from emp order by sal desc limit 1,5;
+select e.ename,e.sal,e.deptno from emp e left join (select deptno,max(sal) as maxsal from emp group by deptno) s on e.deptno=s.deptno where e.sal>=s.maxsal;
+```
+>limit 开始下标(0开始)，前记录条数  
+>常用于分页，如每页查询n条记录，则第i页查询的参数为 (i-1)*n,n
+
+## 练习题(自己写的，非答案)
+1. `select e.ename,e.sal,e.deptno from emp e left join (select deptno,max(sal) as maxsal from emp group by deptno) s on e.deptno=s.deptno where e.sal>=s.maxsal;`
+2. `select e.ename,e.sal from emp e left join (select deptno,avg(sal) as avgsal from emp group by deptno) s  on e.deptno=s.deptno where e.sal>s.avgsal;`
+3. `select e.deptno,avg(g.grade) as avggrade from emp e left join  salgrade g on  e.sal between g.losal and g.hisal  group by e.deptno;`
+4. `select sal from emp order by sal desc limit 1;  `
+5. `select deptno from emp group by deptno order by avg(sal) desc limit 1;`
+6. `select dname from dept where deptno=(select deptno from emp group by deptno order by avg(sal) desc limit 1);`
+7. `select a.dname,min(a.grade) from (select e.deptno,g.grade,d.dname from (select deptno,avg(sal) as avgsal from emp group by deptno) e join salgrade g on e.avgsal between g.losal and g.hisal join dept d on e.deptno=d.deptno) a;`
+8. `select a.ename,a.sal from emp a where a.sal>(select max(e.sal) as maxsal from emp e where empno not in(select distinct mgr from emp where mgr is not null));`
+9. `select e.ename,e.sal from emp e order by e.sal desc limit 5;`
+10. `select e.ename,e.sal from emp e order by e.sal desc limit 5,5;`
+11. `select ename,hiredate from emp order by hiredate desc limit 5;`
+12. `select g.grade,count(*) num from emp e left join salgrade g on e.sal between g.losal and g.hisal group by(g.grade);`
+13. ``
+14. ``
+15. ``
+16. ``
+17. ``
+18. ``
+19. ``
+20. ``
+21. ``
+22. ``
+23. ``
+24. ``
+25. ``
+26. ``
+27. ``
+28. ``
+29. ``
+30. ``
+31. ``
+32. ``
+33. ``
+34. ``
+
+
+
+
+
+
+
+
+
+
+```
