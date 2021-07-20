@@ -62,6 +62,9 @@ select ename,job,sal as 原工资,case job when 'clerk' then sal*2 when 'salesma
 - case[字段1] when[条件1] then[处理1]  when[条件2] then[处理2] else [处理3] end 字段的条件分支处理
 - TIMESTAMPDIFF(interval,dt1,dt2) 计算两个日期时间的整数差，间隔为：YEAR年；QUARTER季度；MONTH月；WEEK周；DAY天；HOUR时；MINUTE分；SECOND秒；FRAC_SECOND毫秒；
 - TIMESTAMPADD(interval,int,dt1) 计算指定日期相加某间隔时间，间隔同上
+- str_to_date('','格式') 将varchar转换为date类型 %Y年；%m月；%d日；%h时；%i分；%s秒；MySQL会自动匹配转换格式为'%Y-%m-%d [%h:%i:%s]'的字符串，因此你可以省略
+- date_format() 将日期格式化
+- now() 返回系统当前时间，datetime类型，'%Y-%m-%d %h:%i:%s'格式
 ## 分组函数
 ```SQL
 select max(sal) as 最高工资,min(sal) as 最低工资,max(sal)-min(sal) as 工资差 from emp;
@@ -169,14 +172,3 @@ select e.ename,e.sal,e.deptno from emp e left join (select deptno,max(sal) as ma
 32. `select e.ename,a.ename as ld,a.sal from emp e join emp a on e.mgr=a.empno where a.sal>3000;`
 33. `select d.dname,sum(e.sal),count(e.ename) from emp e right join dept d on e.deptno=d.deptno where d.dname like '%s%' group by d.dname; `
 34. `select *,timestampdiff(year,hiredate,now()) as 工龄,sal*1.1 加薪后 from emp where timestampdiff(year,hiredate,now())>30; `
-
-
-
-
-
-
-
-
-
-
-```
