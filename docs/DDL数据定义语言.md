@@ -1,3 +1,5 @@
+# [主页](../README.md)>[SQL语言](SQL语言.md)>DDL数据定义语言
+
 ## 创建表
 ```SQL
 create table NAME(字段名1 数据类型 default 值,字段名2 数据类型...);

@@ -1,3 +1,5 @@
+# [主页](../README.md)>[SQL语言](SQL语言.md)>DML数据操作语言
+
 ## 增
 ```SQL
 insert into NAME(字段名1,字段名2...) values(值1,值2...),(多条记录);
