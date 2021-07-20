@@ -60,6 +60,8 @@ select ename,job,sal as 原工资,case job when 'clerk' then sal*2 when 'salesma
 - rand() 生成0-1之间的随机数
 - ifnull([字段1],如果是null则) 空处理，在数据库中NULL运算的结果必定是NULL
 - case[字段1] when[条件1] then[处理1]  when[条件2] then[处理2] else [处理3] end 字段的条件分支处理
+- TIMESTAMPDIFF(interval,dt1,dt2) 计算两个日期时间的整数差，间隔为：YEAR年；QUARTER季度；MONTH月；WEEK周；DAY天；HOUR时；MINUTE分；SECOND秒；FRAC_SECOND毫秒；
+- TIMESTAMPADD(interval,int,dt1) 计算指定日期相加某间隔时间，间隔同上
 ## 分组函数
 ```SQL
 select max(sal) as 最高工资,min(sal) as 最低工资,max(sal)-min(sal) as 工资差 from emp;
@@ -146,27 +148,27 @@ select e.ename,e.sal,e.deptno from emp e left join (select deptno,max(sal) as ma
 11. `select ename,hiredate from emp order by hiredate desc limit 5;`
 12. `select g.grade,count(*) num from emp e left join salgrade g on e.sal between g.losal and g.hisal group by(g.grade);`
 13. ``
-14. ``
-15. ``
-16. ``
-17. ``
-18. ``
-19. ``
-20. ``
-21. ``
-22. ``
-23. ``
-24. ``
-25. ``
-26. ``
-27. ``
-28. ``
-29. ``
-30. ``
-31. ``
-32. ``
-33. ``
-34. ``
+14. `select e.ename,ifnull(m.ename,'没有上级') from emp e left join emp m on e.mgr=m.empno;`
+15. `select e.empno,e.ename,d.dname from emp e left join emp m on e.mgr=m.empno join dept d on e.deptno=d.deptno where e.hiredate<m.hiredate;`
+16. `select d.dname,e.ename,e.job,e.mgr,e.hiredate,e.sal,e.comm,e.deptno from emp e right join dept d on e.deptno=d.deptno;`
+17. `select d.dname,count(*) as 人数 from emp e join dept d on e.deptno=d.deptno  group by d.deptno having 人数>=5;`
+18. `select ename,sal from emp where sal>(select sal from emp where ename='smith');`
+19. `select a.*,b.* from (select e.ename,d.dname from emp e join dept d on e.deptno=d.deptno where e.job='clerk') a join (select d.dname,count(*) as count from emp e join dept d on e.deptno=d.deptno group by d.dname) b on a.dname=b.dname;`
+20. `select job,count(*) from emp group by job having min(sal)>1500;`
+21. `select ename from emp where deptno=(select deptno from dept where dname='sales');`
+22. `select e.ename,d.dname,m.ename,g.grade from emp e join dept d on e.deptno=d.deptno left join emp m on e.mgr=m.empno join salgrade g on e.sal between g.losal and g.hisal where e.sal>(select avg(sal) from emp);`
+23. `select e.ename,d.dname from emp e join dept d on e.deptno=d.deptno where job=(select job from emp where ename='scott');`
+24. `select ename,sal from emp where sal in (select sal from emp where deptno='30' ) and deptno<>'30';`
+25. `select ename,sal from emp where sal>(select max(sal) from emp where deptno='30');`
+26. `select d.dname,count(e.ename),avg(e.sal),avg(timestampdiff(year,hiredate,now())) from emp e right join dept d on e.deptno=d.deptno group by d.dname;`
+27. `select e.ename,d.dname,e.sal from emp e left join dept d on e.deptno=d.deptno;`
+28. `select d.*,count(e.ename) from dept d left join emp e on d.deptno=e.deptno group by d.deptno; `
+29. `select * from emp e join (select job,min(sal) as minsal from emp group by job ) a on e.job=a.job and e.sal=a.minsal;`
+30. `select *,min(sal) from emp where job='manager' group by deptno ;`
+31. `select ename,(sal+ifnull(comm,0))*12 as 年薪 from emp order by 年薪 asc;`
+32. `select e.ename,a.ename as ld,a.sal from emp e join emp a on e.mgr=a.empno where a.sal>3000;`
+33. `select d.dname,sum(e.sal),count(e.ename) from emp e right join dept d on e.deptno=d.deptno where d.dname like '%s%' group by d.dname; `
+34. `select *,timestampdiff(year,hiredate,now()) as 工龄,sal*1.1 加薪后 from emp where timestampdiff(year,hiredate,now())>30; `
 
 
 
