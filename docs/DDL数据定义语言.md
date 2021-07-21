@@ -1,14 +1,18 @@
 # [主页](../README.md)>[SQL语言](SQL语言.md)>DDL数据定义语言
 
 ## 创建表
+
 ```SQL
 create table NAME(字段名1 数据类型 default 值,字段名2 数据类型...);
 create table stu(no char(10),name varchar(32),sex char(1) default '男',age int,email varchar(255));
 create table user(no char(10) not null,name varchar(32),sex char(1) default '男',age int,email varchar(255),create_time datetime default now());
 drop table users;
 create table user_ as select * from user; 将查询结果新建为一张表，并复制记录
+show create table stu;
 ```
+
 >default '值'，为某个字段指定默认值，不指定则为NULL，可使用函数  
+>show create table NAME 显示创建表的语句
 |数据类型|范围|
 |----|----|
 |varchar(n)|可变长度字符串（最大长度255），效率比char低|
@@ -23,16 +27,19 @@ create table user_ as select * from user; 将查询结果新建为一张表，�
 |blob|用于存储常见流媒体对象|
 
 ## 删除表
+
 ```SQL
 drop table [if exists] NAME; 删除表
 truncate table NAME;删除表中所有记录，无法回滚
 ```
+
 ## 修改表结构
-```SQL
-表一旦完成创建，便不会轻易修改，而且通常不会使用命令来修改表结构
-可以使用类似HeidiSQL的MySQL客户端来管理修改
-```
+
+表一旦完成创建，便不会轻易修改，而且通常不会使用命令来修改表结构  
+可以使用类似[HeidiSQL](https://www.heidisql.com/)的MySQL客户端来管理修改
+
 ## 约束
+
 ```SQL
 drop table if exists stu;
 create table stu(no char(10) primary key,name varchar(32),sex char(1) default '男',age int,email varchar(255));
@@ -47,9 +54,37 @@ insert into stu(name,sex,age,class_no) values('张三','男',22,302),('李四','
 select * from stu;
 
 ```
+
 - not null 指定字段不允许为空
 - unique 字段必须唯一，但可空;unique(字段1,字段2)表示将两个字段联合后唯一
 - primary key 主键，是每条记录的唯一标识，不能为空，不能为NULL，且只能存在一个主键，通常使用auto_increment来自动生成主键，任何一张表都必须有主键;primary key(字段1,字段2)表示复合主键（不建议使用）
 - foreign key 外键，用来约束字段值，该字段的值只能包含在外键字段中，且引用的字段必须有唯一约束
+
 >新增父表，即被外键引用的表；新增子表，即需要外键的表；  
 >外键可以为NULL
+
+## 存储引擎
+
+```SQL
+drop table if exists stu;
+create table stu(no char(10) primary key,name varchar(32),sex char(1) default '男',age int,email varchar(255)) engine=innodb default charset=utf8;
+```
+
+mysql> show engines \g
++--------------------+---------+----------------------------------------------------------------+--------------+------+------------+
+| Engine             | Support | Comment                                                        | Transactions | XA   | Savepoints |
++--------------------+---------+----------------------------------------------------------------+--------------+------+------------+
+| MEMORY             | YES     | Hash based, stored in memory, useful for temporary tables      | NO           | NO   | NO         |
+| MRG_MYISAM         | YES     | Collection of identical MyISAM tables                          | NO           | NO   | NO         |
+| CSV                | YES     | CSV storage engine                                             | NO           | NO   | NO         |
+| FEDERATED          | NO      | Federated MySQL storage engine                                 | NULL         | NULL | NULL       |
+| PERFORMANCE_SCHEMA | YES     | Performance Schema                                             | NO           | NO   | NO         |
+| MyISAM             | YES     | MyISAM storage engine                                          | NO           | NO   | NO         |
+| InnoDB             | DEFAULT | Supports transactions, row-level locking, and foreign keys     | YES          | YES  | YES        |
+| BLACKHOLE          | YES     | /dev/null storage engine (anything you write to it disappears) | NO           | NO   | NO         |
+| ARCHIVE            | YES     | Archive storage engine                                         | NO           | NO   | NO         |
++--------------------+---------+----------------------------------------------------------------+--------------+------+------------+
+9 rows in set (0.00 sec)
+
+>查看MYSQL所有支持的存储引擎  
+>MyISAM
