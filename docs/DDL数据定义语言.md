@@ -13,8 +13,9 @@ show create table stu;
 
 >default '值'，为某个字段指定默认值，不指定则为NULL，可使用函数  
 >show create table NAME 显示创建表的语句
+
 |数据类型|范围|
-|----|----|
+|--|--|
 |varchar(n)|可变长度字符串（最大长度255），效率比char低|
 |char(n)|指定长度为n字符串（最大长度255）|
 |int|整型（最大长度11）|
