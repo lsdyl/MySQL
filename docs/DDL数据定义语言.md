@@ -1,4 +1,4 @@
-# [主页](../README.md)>[SQL语言](SQL语言.md)>DDL数据定义语言
+# [主页](../README.md)>DDL数据定义语言
 
 ## 创建表
 

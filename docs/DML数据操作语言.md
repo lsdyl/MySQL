@@ -1,4 +1,4 @@
-# [主页](../README.md)>[SQL语言](SQL语言.md)>DML数据操作语言
+# [主页](../README.md)>DML数据操作语言
 
 ## 增
 

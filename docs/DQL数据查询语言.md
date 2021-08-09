@@ -1,4 +1,4 @@
-# [主页](../README.md)>[SQL语言](SQL语言.md)>DQL数据查询语言
+# [主页](../README.md)>DQL数据查询语言
 
 ```SQL
 select
